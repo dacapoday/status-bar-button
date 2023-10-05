@@ -1,0 +1,149 @@
+{
+  "name": "status-bar-button",
+  "displayName": "status-bar-button",
+  "description": "add programmable button into status bar",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "browser": "./dist/web/extension.js",
+  "contributes": {
+    "configuration": {
+      "type": "object",
+      "title": "Status Bar Button",
+      "properties": {
+        "status-bar-button.buttons": {
+          "type": "array",
+          "description": "Buttons Definition",
+          "items": {
+            "type": "object",
+            "title": "Button Definition",
+            "properties": {
+              "name": {
+                "type": "string",
+                "title": "Name of Button",
+                "description": "Name used to reference the Button"
+              },
+              "group": {
+                "type": "string",
+                "title": "Name of Button's group",
+                "description": "Grouping highlight selected button. Group's name starting with \"_\" will disable highlight."
+              },
+              "hide": {
+                "type": "boolean",
+                "title": "Hide Button",
+                "description": "hide Button"
+              },
+              "activeColor": {
+                "type": "string"
+              },
+              "inactiveColor": {
+                "type": "string"
+              },
+              "alignment": {
+                "type": "string",
+                "enum": [
+                  "left",
+                  "right"
+                ]
+              },
+              "priority": {
+                "type": "number"
+              },
+              "text": {
+                "type": "string"
+              },
+              "tooltip": {
+                "type": "string"
+              },
+              "command": {
+                "oneOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string"
+                            },
+                            "command": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string"
+                      },
+                      "command": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                ]
+              },
+              "view": {
+                "type": "string"
+              },
+              "inPanel": {
+                "type": "boolean",
+                "title": "Confirm that the view is in panel",
+                "description": "Use with view"
+              },
+              "display": {
+                "type": "string",
+                "enum": ["filesize"]
+              }
+            }
+          },
+          "default":[]
+        }
+      }
+    }
+  },
+  "scripts": {
+    "test": "vscode-test-web --browserType=chromium --extensionDevelopmentPath=. --extensionTestsPath=dist/web/test/suite/index.js",
+    "pretest": "npm run compile-web",
+    "vscode:prepublish": "npm run package-web",
+    "compile-web": "webpack",
+    "watch-web": "webpack --watch",
+    "package-web": "webpack --mode production --devtool hidden-source-map",
+    "lint": "eslint src --ext ts",
+    "run-in-browser": "vscode-test-web --browserType=chromium --extensionDevelopmentPath=. ."
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.80.0",
+    "@types/mocha": "^10.0.1",
+    "eslint": "^8.41.0",
+    "@typescript-eslint/eslint-plugin": "^5.59.8",
+    "@typescript-eslint/parser": "^5.59.8",
+    "mocha": "^10.2.0",
+    "typescript": "^5.1.3",
+    "@vscode/test-web": "^0.0.44",
+    "ts-loader": "^9.4.3",
+    "webpack": "^5.85.0",
+    "webpack-cli": "^5.1.1",
+    "@types/webpack-env": "^1.18.1",
+    "assert": "^2.0.0",
+    "process": "^0.11.10"
+  }
+}
