@@ -81,7 +81,9 @@ function loadSettings(settings: ButtonSetting[]) {
 			return new Placeholder(group, name, alignment, priority, text, tooltip, activeColor, inactiveColor);
 		})();
 
-		if (!setting?.hide) {
+		if (setting?.hide) {
+			button.hide();
+		} else {
 			button.show();
 		}
 		Buttons.append(group, button);
@@ -117,7 +119,7 @@ interface ButtonSetting {
 	readonly name?: string
 	readonly text?: string
 	readonly tooltip?: string
-	command?: (string | CommandSetting)[] | string | CommandSetting
+	readonly command?: (string | CommandSetting)[] | string | CommandSetting
 	readonly view?: string;
 	readonly display?: string;
 }
@@ -151,28 +153,28 @@ class Buttons {
 		Buttons.groups.get(group)?.set(button.name, button);
 	}
 
-	public static active(group: string, button: string) {
+	public static active(group: string, name: string) {
 		if (group == "" || group[0] == "_") {
 			return;
 		}
-		Buttons.groups.get(group)?.forEach((val, key) => {
-			if (key == button) {
-				val.active();
+		Buttons.groups.get(group)?.forEach((b, button) => {
+			if (name == button) {
+				b.active();
 			} else {
-				val.inactive();
+				b.inactive();
 			}
 		});
 	}
 
 	public static initState() {
-		Buttons.groups.forEach((group, n) => {
-			if (n == "" || n[0] == "_") {
-				group.forEach((val, _) => {
-					val.active();
+		Buttons.groups.forEach((g, group) => {
+			if (group == "" || group[0] == "_") {
+				g.forEach((b, _) => {
+					b.active();
 				});
 			} else {
-				group.forEach((val, _) => {
-					val.inactive();
+				g.forEach((b, _) => {
+					b.inactive();
 				});
 			}
 		});
@@ -206,7 +208,7 @@ class Placeholder {
 		this.name = name;
 		this.activeColor = activeColor;
 		this.inactiveColor = inactiveColor;
-		this.button = vscode.window.createStatusBarItem(group + name + "_" + alignment + "_" + priority, alignment, priority);
+		this.button = vscode.window.createStatusBarItem(group + alignment + name + priority, alignment, priority);
 		this.button.text = text;
 		this.button.tooltip = tooltip;
 	}
@@ -226,6 +228,7 @@ class Placeholder {
 	hide() {
 		this.button.hide();
 	}
+
 	dispose() {
 		this.button.dispose();
 	}
