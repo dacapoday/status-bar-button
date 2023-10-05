@@ -6,6 +6,9 @@
   "engines": {
     "vscode": "^1.80.0"
   },
+  "icon": "icon.png",
+  "publisher": "dacapoday",
+  "repository": "https://github.com/dacapoday/status-bar-button",
   "categories": [
     "Other"
   ],
