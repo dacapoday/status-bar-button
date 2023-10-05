@@ -3,6 +3,7 @@
 A VSCode plugin that provides programmable buttons for the Status Bar.
 
 ## feature
+0. Support installation to `vscode.dev`.
 1. Save space of ActivityBar. 
 2. Provide FileSize Info.
 3. Provide Code Navigation button.
@@ -21,6 +22,13 @@ A VSCode plugin that provides programmable buttons for the Status Bar.
         "priority": 1000,
     },
     {
+      "group": "_nav",
+      "text": " ",
+      "tooltip": "placeholder",
+      "alignment": "right",
+      "priority": 1000,
+    },
+    {
         "group": "_nav",
         "text": "$(arrow-right)",
         "tooltip": "Forward",
@@ -35,17 +43,17 @@ A VSCode plugin that provides programmable buttons for the Status Bar.
     },
     {
         "text": "$(settings-gear)",
-		"tooltip": "Open Settings",
+        "tooltip": "Open Settings",
         "alignment": "left",
         "priority": 1000,
-		"command": "workbench.action.openSettings",
+        "command": "workbench.action.openSettings",
     },
     {
         "text": "$(layout-activitybar-left)",
-		"tooltip": "ActivityBar",
+        "tooltip": "ActivityBar",
         "alignment": "left",
         "priority": 9999,
-		"command": "workbench.action.toggleActivityBarVisibility",
+        "command": "workbench.action.toggleActivityBarVisibility",
     },
     {
         "group": "ViewBar",

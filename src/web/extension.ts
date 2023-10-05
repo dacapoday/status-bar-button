@@ -74,7 +74,8 @@ function loadSettings(settings: ButtonSetting[]) {
 				}
 			} else if (setting.display != null) {
 				if (setting.display.toLowerCase() == "filesize") {
-					return new Filesize(group, name, alignment, priority, activeColor, inactiveColor);
+					const tooltip = setting.tooltip ?? "File Size";
+					return new Filesize(group, name, alignment, priority, tooltip, activeColor, inactiveColor);
 				}
 			}
 			return new Placeholder(group, name, alignment, priority, text, tooltip, activeColor, inactiveColor);
@@ -279,10 +280,11 @@ class Filesize extends Placeholder {
 	constructor(group: string, name: string,
 		alignment: vscode.StatusBarAlignment,
 		priority: number,
+		tooltip: string,
 		activeColor: (string | vscode.ThemeColor),
 		inactiveColor: (string | vscode.ThemeColor),
 	) {
-		super(group, name, alignment, priority, "", "", activeColor, inactiveColor);
+		super(group, name, alignment, priority, "", tooltip, activeColor, inactiveColor);
 		this.disposes = [];
 		this.disposes.push(vscode.workspace.onDidSaveTextDocument(doc => {
 			const textEditor = vscode.window.activeTextEditor;
@@ -305,8 +307,8 @@ class Filesize extends Placeholder {
 	}
 
 	format(size: number): string {
-		if (size >= 1048576) { return `${Math.floor(size / 10485.76) / 100} MB`; }
-		else if (size >= 1024) { return `${Math.floor(size / 10.24) / 100} KB`; }
+		if (size >= 1048576) { return `${Math.floor(size / 10485.76) / 100} MiB`; }
+		else if (size >= 1024) { return `${Math.floor(size / 10.24) / 100} KiB`; }
 		else { return `${size} B`; }
 	}
 
