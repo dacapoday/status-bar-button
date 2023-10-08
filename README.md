@@ -4,7 +4,7 @@ A VSCode plugin that provides programmable buttons for the Status Bar.
 Inspired by [activitusbar](https://github.com/Gruntfuggly/activitusbar),
 [Code Navigation](https://marketplace.visualstudio.com/items?itemName=vikas.code-navigation) and [file-size](https://github.com/zhcode-fun/file-size).
 
-![Demo buttons in status bar](https://github.com/dacapoday/status-bar-button/blob/main/doc/screenshoot.png)
+![Demo buttons in status bar](https://raw.githubusercontent.com/dacapoday/status-bar-button/main/doc/screenshoot.png)
 
 The goal is to provide a elegant editor UI without losing functionality.
 
