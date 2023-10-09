@@ -17,9 +17,9 @@ export function deactivate() {
 
 function loadSettings(settings: ButtonSetting[]) {
 	settings.forEach((setting: ButtonSetting, index: number) => {
-		const id   = setting.name ? "#" + setting.name : "@" + index;
+		const id = setting.name ? "#" + setting.name : "@" + index;
 		const text = setting.text ?? "^_^";
-		const name = setting.name ?? text;
+		const name = setting.name ?? "button(" + index + ")";
 		const tooltip = setting.tooltip ?? text;
 		const priority = setting.priority ?? 1;
 		const group = setting.group ?? "";
@@ -81,9 +81,10 @@ function loadSettings(settings: ButtonSetting[]) {
 					return new Filesize(group, id, name, alignment, priority, tooltip, activeColor, inactiveColor);
 				}
 			}
-
-			const name = setting.name ?? "Placeholder";
-			return new Placeholder(group, id, name, alignment, priority, text, tooltip, activeColor, inactiveColor);
+			{
+				const name = setting.name ?? "Placeholder";
+				return new Placeholder(group, id, name, alignment, priority, text, tooltip, activeColor, inactiveColor);
+			}
 		})();
 
 		if (setting?.hide) {

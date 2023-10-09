@@ -2,7 +2,7 @@
   "name": "status-bar-button",
   "displayName": "status-bar-button",
   "description": "add programmable button into status bar",
-  "version": "0.0.2",
+  "version": "0.0.4",
   "engines": {
     "vscode": "^1.80.0"
   },
