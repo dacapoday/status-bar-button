@@ -17,12 +17,13 @@ The goal is to provide a elegant editor UI without losing functionality.
 
 ## configuration
 
-This is a array containing objects with group name, their associated labels or icons and optional tooltips. 
+This is a array containing objects with button name, group name, their associated labels or icons and optional tooltips. 
 
 The basic config look like:
 ```json
     {
         "group": " group-name or _group_name_ ",
+        "name": " button name ",
         "text": " label and/or `$(icon-name)` ",
         "tooltip": " optional ",
         "alignment": " `left` or `right` ",
@@ -94,6 +95,7 @@ Or just use the button as a display to show the size of the currently active fil
     {
         "group": "_nav",
         "text": "$(arrow-left)",
+        "name": "Back",
         "tooltip": "Back",
         "command": "workbench.action.navigateBack",
         "alignment": "right",
@@ -109,6 +111,7 @@ Or just use the button as a display to show the size of the currently active fil
     {
         "group": "_nav",
         "text": "$(arrow-right)",
+        "name": "Forward",
         "tooltip": "Forward",
         "command": "workbench.action.navigateForward",
         "alignment": "right",

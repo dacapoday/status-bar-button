@@ -17,8 +17,9 @@ export function deactivate() {
 
 function loadSettings(settings: ButtonSetting[]) {
 	settings.forEach((setting: ButtonSetting, index: number) => {
-		const name = setting.name ? "#" + setting.name : "@" + index;
+		const id   = setting.name ? "#" + setting.name : "@" + index;
 		const text = setting.text ?? "^_^";
+		const name = setting.name ?? text;
 		const tooltip = setting.tooltip ?? text;
 		const priority = setting.priority ?? 1;
 		const group = setting.group ?? "";
@@ -58,27 +59,31 @@ function loadSettings(settings: ButtonSetting[]) {
 		const button = (() => {
 			if (setting.command != null) {
 				if (Array.isArray(setting.command)) {
-					return new Commands(group, name, alignment, priority, text, tooltip, activeColor, inactiveColor, setting.command.map(command => loadCommand(command)));
+					return new Commands(group, id, name, alignment, priority, text, tooltip, activeColor, inactiveColor, setting.command.map(command => loadCommand(command)));
 				} else {
-					return new Commands(group, name, alignment, priority, text, tooltip, activeColor, inactiveColor, [loadCommand((setting.command as (string | CommandSetting)))]);
+					return new Commands(group, id, name, alignment, priority, text, tooltip, activeColor, inactiveColor, [loadCommand((setting.command as (string | CommandSetting)))]);
 				}
 			} else if (setting.view != null) {
 				const view = setting.view.toLowerCase();
 				if (!View.verify(view)) {
 					vscode.window.showInformationMessage("Unrecognised view:" + view);
 				} else {
+					const name = setting.name ?? "Show " + View.mapping[view].tooltip;
 					const text = setting.text ?? `$(${View.mapping[view].codicon})`;
 					const tooltip = setting.tooltip ?? View.mapping[view].tooltip;
 					const inPanel = setting.inPanel ?? ["problems", "output", "terminal", "console"].includes(view) ? true : false;
-					return new View(group, name, alignment, priority, text, tooltip, activeColor, inactiveColor, view, inPanel);
+					return new View(group, id, name, alignment, priority, text, tooltip, activeColor, inactiveColor, view, inPanel);
 				}
 			} else if (setting.display != null) {
 				if (setting.display.toLowerCase() == "filesize") {
 					const tooltip = setting.tooltip ?? "File Size";
-					return new Filesize(group, name, alignment, priority, tooltip, activeColor, inactiveColor);
+					const name = setting.name ?? "File Size";
+					return new Filesize(group, id, name, alignment, priority, tooltip, activeColor, inactiveColor);
 				}
 			}
-			return new Placeholder(group, name, alignment, priority, text, tooltip, activeColor, inactiveColor);
+
+			const name = setting.name ?? "Placeholder";
+			return new Placeholder(group, id, name, alignment, priority, text, tooltip, activeColor, inactiveColor);
 		})();
 
 		if (setting?.hide) {
@@ -196,7 +201,7 @@ class Placeholder {
 	name: string;
 	activeColor: vscode.ThemeColor;
 	inactiveColor: vscode.ThemeColor;
-	constructor(group: string, name: string,
+	constructor(group: string, id: string, name: string,
 		alignment: vscode.StatusBarAlignment,
 		priority: number,
 		text: string,
@@ -205,10 +210,11 @@ class Placeholder {
 		inactiveColor: (string | vscode.ThemeColor),
 	) {
 		this.group = group;
-		this.name = name;
+		this.name = id;
 		this.activeColor = activeColor;
 		this.inactiveColor = inactiveColor;
-		this.button = vscode.window.createStatusBarItem(group + alignment + name + priority, alignment, priority);
+		this.button = vscode.window.createStatusBarItem(group + alignment + id + priority, alignment, priority);
+		this.button.name = name;
 		this.button.text = text;
 		this.button.tooltip = tooltip;
 	}
@@ -239,7 +245,7 @@ class Commands extends Placeholder {
 	total: number;
 	command: vscode.Disposable;
 	commands: (() => void)[];
-	constructor(group: string, name: string,
+	constructor(group: string, id: string, name: string,
 		alignment: vscode.StatusBarAlignment,
 		priority: number,
 		text: string,
@@ -248,7 +254,7 @@ class Commands extends Placeholder {
 		inactiveColor: (string | vscode.ThemeColor),
 		settings: CommandSetting[],
 	) {
-		super(group, name, alignment, priority, text, tooltip, activeColor, inactiveColor);
+		super(group, id, name, alignment, priority, text, tooltip, activeColor, inactiveColor);
 		this.current = 0;
 		this.commands = settings.map(setting => {
 			if (setting.type == "vscode") {
@@ -260,7 +266,7 @@ class Commands extends Placeholder {
 			return () => { };
 		});
 		this.total = this.commands.length;
-		const commandName = 'status-bar-button.commands-' + group + name + (group.length - name.length);
+		const commandName = 'status-bar-button.commands-' + this.group + this.name + (this.group.length - this.name.length);
 		this.command = vscode.commands.registerCommand(commandName, this.exec, this);
 		this.button.command = commandName;
 	}
@@ -280,14 +286,14 @@ class Commands extends Placeholder {
 
 class Filesize extends Placeholder {
 	disposes: vscode.Disposable[];
-	constructor(group: string, name: string,
+	constructor(group: string, id: string, name: string,
 		alignment: vscode.StatusBarAlignment,
 		priority: number,
 		tooltip: string,
 		activeColor: (string | vscode.ThemeColor),
 		inactiveColor: (string | vscode.ThemeColor),
 	) {
-		super(group, name, alignment, priority, "", tooltip, activeColor, inactiveColor);
+		super(group, id, name, alignment, priority, "", tooltip, activeColor, inactiveColor);
 		this.disposes = [];
 		this.disposes.push(vscode.workspace.onDidSaveTextDocument(doc => {
 			const textEditor = vscode.window.activeTextEditor;
@@ -383,7 +389,7 @@ class View extends Placeholder {
 	}
 
 	command: vscode.Disposable;
-	constructor(group: string, name: string,
+	constructor(group: string, id: string, name: string,
 		alignment: vscode.StatusBarAlignment,
 		priority: number,
 		text: string,
@@ -393,7 +399,7 @@ class View extends Placeholder {
 		view: string,
 		inPanel: boolean,
 	) {
-		super(group, name, alignment, priority, text, tooltip, activeColor, inactiveColor);
+		super(group, id, name, alignment, priority, text, tooltip, activeColor, inactiveColor);
 
 		const exec = (() => {
 			const command = View.mapping[view].command;
@@ -415,7 +421,7 @@ class View extends Placeholder {
 			};
 		})();
 
-		const commandName = 'status-bar-button.view-' + group + name + (group.length - name.length);
+		const commandName = 'status-bar-button.view-' + this.group + this.name + (this.group.length - this.name.length);
 		this.command = vscode.commands.registerCommand(commandName, exec, this);
 		this.button.command = commandName;
 	}
